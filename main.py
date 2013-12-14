@@ -49,7 +49,8 @@ add_filter_rule()
 print "Adding Webserver Rule..."
 add_server_rule()
 
-r = redis.StrictRedis(host='localhost', port=6379, db=0)
+# r = redis.StrictRedis(host='localhost', port=6379, db=0)
+r = redis.Redis(host='localhost', port=6379, db=0)
 # r.flushdb() # flushes entire database
 
 # set some default blocked pages for substance
