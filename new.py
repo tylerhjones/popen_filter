@@ -50,7 +50,7 @@ print "Adding Webserver Rule..."
 add_server_rule()
 
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
-r.flushdb() # flushes entire database
+# r.flushdb() # flushes entire database
 
 # set some default blocked pages for substance
 r.hset("blocked", "www.reddit.com","blah")
