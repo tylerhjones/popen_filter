@@ -61,6 +61,7 @@ r.hset("blocked", "www.reddit.com","blah")
 r.hset("blocked", "www.woot.com","blah")
 
 r.set("status","running") # true means the filter is running
+r.set("change","no") # tells the nfqueue to re-copy the dictionary if "yes"
 
 if len(sys.argv) > 1:
 	local_ip   = str(sys.argv[1]) # first arg taken is the local ip on eth0

@@ -8,8 +8,13 @@ conf.L3socket = L3RawSocket
 # redis connection
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
+blocked_list = r.hgetall("blocked")
+
 def filter_pkt(payload):
-	blocked_list = r.hgetall("blocked") # gets the blocked list from the db returned as a dictionary
+
+	if r.get("change") == "yes": # change detected, reload dict
+		blocked_list = r.hgetall("blocked")
+		r.set("change","no")
 	data = payload.get_data()
 	pkt = IP(data)
 
