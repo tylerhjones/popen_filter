@@ -71,8 +71,8 @@
 				% for key in block_list:
 					<li>
 						<form action="remove" method="post">
-							<input type="text" class="pretty" name="url" value=${block_list[key]} readonly/>
-							<input type="hidden" class="pretty" name="key" value=${key} readonly/>
+							<input type="text" class="pretty" name="key" value=${key} readonly/>
+							<input type="hidden" class="pretty" name="url" value=${key} readonly/>
 							<input type="submit" value="Remove"/>
 						</form>
 					</li>

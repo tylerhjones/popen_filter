@@ -49,32 +49,47 @@ add_filter_rule()
 print "Adding Webserver Rule..."
 add_server_rule()
 
-# r = redis.StrictRedis(host='localhost', port=6379, db=0)
-r = redis.Redis(host='localhost', port=6379, db=0)
+# print "Starting redis..."
+# os.system("redis-server &> /dev/null &")
+
+r = redis.StrictRedis(host='localhost', port=6379, db=0)
+# r = redis.Redis(host='localhost', port=6379, db=0)
 # r.flushdb() # flushes entire database
 
 # set some default blocked pages for substance
 r.hset("blocked", "www.reddit.com","blah")
 r.hset("blocked", "www.woot.com","blah")
 
-r.set("status",True) # true means the filter is running
+r.set("status","running") # true means the filter is running
 
 if len(sys.argv) > 1:
 	local_ip   = str(sys.argv[1]) # first arg taken is the local ip on eth0
 else:
 	local_ip   = '192.168.0.80' # default local ip and the ip the device often gets at home
 
-# w = subprocess.Popen(["python webserver.py", local_ip])
+w = subprocess.Popen(["python","/home/pi/send_to_pi/popen_filter/webserver.py", local_ip])
 
-# q = subprocess.Popen(["python queue.py"])
+q = subprocess.Popen(["python","nfqu.py"])
 
+sts_tmp = "running" # compoarison of previous state
 while True:
-	time.sleep(1)
+	time.sleep(2.25)
+
+	print q.poll()
+	# if q.poll() is None:
+	# 	print "killing process: %d" % q.pid
+	# 	os.kill(q.pid, signal.SIGTERM)
+	# 	q = subprocess.Popen(["python","nfqu.py"])
+
 	sts = r.get("status")
-	if not sts:
-		remove_filter_rule()
-	if sts:
-		add_filter_rule()
+	if sts != sts_tmp:
+		if sts == "stopped":
+			print sts
+			remove_filter_rule()
+		if sts == "running":
+			print sts
+			add_filter_rule()
+	sts_tmp = sts
 
 
 

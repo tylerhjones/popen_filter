@@ -8,13 +8,13 @@ conf.L3socket = L3RawSocket
 # redis connection
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-def filter_pkt(self, payload):
+def filter_pkt(payload):
 	blocked_list = r.hgetall("blocked") # gets the blocked list from the db returned as a dictionary
 	data = payload.get_data()
 	pkt = IP(data)
 
 	if pkt.getlayer(DNS) and pkt[DNS].qd and not pkt[DNS].an:
-		print pkt[DNS].qd.qname
+		# print pkt[DNS].qd.qname
 		if pkt[DNS].qd.qname in blocked_list:
 			print "domain found in block list"
 			# self.redirect(data)
