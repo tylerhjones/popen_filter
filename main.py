@@ -19,8 +19,8 @@ def runbridge_setup():
 # these methods assume only one iptable rule exists in each chain
 def add_filter_rule():
   print "add iprule called"
-  if os.system("iptables -C FORWARD -i pibridge -j NFQUEUE --queue-num 0")!=0:
-    os.system("iptables -A FORWARD -i pibridge -j NFQUEUE --queue-num 0")
+  if os.system("iptables -C FORWARD -p udp -i pibridge -j NFQUEUE --queue-num 0")!=0:
+    os.system("iptables -A FORWARD -p udp -i pibridge -j NFQUEUE --queue-num 0")
 
 def remove_filter_rule():
   print "remove iprule called"
@@ -52,13 +52,13 @@ add_server_rule()
 # print "Starting redis..."
 # os.system("redis-server &> /dev/null &")
 
-r = redis.StrictRedis(host='localhost', port=6379, db=0)
+r = redis.Redis(unix_socket_path='/tmp/redis.sock')
 # r = redis.Redis(host='localhost', port=6379, db=0)
 # r.flushdb() # flushes entire database
 
 # set some default blocked pages for substance
-r.hset("blocked", "www.reddit.com","blah")
-r.hset("blocked", "www.woot.com","blah")
+r.hset("blocked", "www.reddit.com.","blah")
+r.hset("blocked", "www.woot.com.","blah")
 
 r.set("status","running") # true means the filter is running
 r.set("change","no") # tells the nfqueue to re-copy the dictionary if "yes"

@@ -19,7 +19,7 @@ lookup = TemplateLookup(directories=['views'])
 class FilterServ(object):
   @cherrypy.expose
   def index(self):
-    r = redis.StrictRedis(host='localhost', port=6379, db=0)
+    r = redis.Redis(unix_socket_path='/tmp/redis.sock')
     blocked_list = r.hgetall("blocked")
     filter_status = r.get("status")
 
@@ -30,7 +30,7 @@ class FilterServ(object):
 
   def add_block(self, url=None):
     print "ADDing URL ... "
-    r = redis.StrictRedis(host='localhost', port=6379, db=0)
+    r = redis.Redis(unix_socket_path='/tmp/redis.sock')
     r.hset("blocked", url,"blah")
     blocked_list = r.hgetall("blocked")
 
@@ -45,7 +45,7 @@ class FilterServ(object):
 
   def toggle(self):
     print "Webserver toggled..."
-    r = redis.StrictRedis(host='localhost', port=6379, db=0)
+    r = redis.Redis(unix_socket_path='/tmp/redis.sock')
 
     sts = r.get("status")
     if sts == "running":
@@ -61,7 +61,7 @@ class FilterServ(object):
   toggle.exposed = True   
 
   def remove(self, url=None, key=None):
-    r = redis.StrictRedis(host='localhost', port=6379, db=0)
+    r = redis.Redis(unix_socket_path='/tmp/redis.sock')
     r.hdel("blocked", key)
     blocked_list = r.hgetall("blocked")
 

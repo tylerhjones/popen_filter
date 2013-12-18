@@ -1,0 +1,6 @@
+
+starting unix socket
+socket -s /tmp/redis.sock
+
+starting redis
+redis-server redis.conf
